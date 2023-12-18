@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "movieName": "Inception",
+    "startTime": "18:00",
+    "duration": 150,
+    "ticketPrice": 10.50
+  },
+  {
+    "id": 2,
+    "movieName": "The Dark Knight",
+    "startTime": "20:30",
+    "duration": 152,
+    "ticketPrice": 12.00
+  },
+  {
+    "id": 3,
+    "movieName": "Interstellar",
+    "startTime": "15:45",
+    "duration": 169,
+    "ticketPrice": 11.75
+  }
+
+]

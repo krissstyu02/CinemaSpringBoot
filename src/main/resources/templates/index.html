@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinema Sessions</title>
+</head>
+<body>
+<h1>Cinema Sessions</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Movie Name</th>
+        <th>Start Time</th>
+        <th>Duration</th>
+        <th>Ticket Price</th>
+    </tr>
+    </thead>
+    <tbody>
+    <a>hhh</a>
+    <tr th:each="session : ${sessions}">
+        <td th:text="${session.id}"></td>
+        <td th:text="${session.movieName}"></td>
+        <td th:text="${session.startTime}"></td>
+        <td th:text="${session.duration}"></td>
+        <td th:text="${session.ticketPrice}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
