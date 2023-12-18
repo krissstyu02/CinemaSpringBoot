@@ -1,10 +1,12 @@
 package com.example.cinemaspringboot.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import com.example.cinemaspringboot.Session;
 import com.example.cinemaspringboot.SessionManager;
+import com.example.cinemaspringboot.AppInfo;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,12 +18,16 @@ public class MovieSessionController {
 
     @PostMapping
     public void addSession(@RequestBody Session session) {
+        loadFromFile();
         sessionManager.addSession(session);
+        saveToFile();
     }
 
     @DeleteMapping("/{id}")
     public void removeSession(@PathVariable int id) {
+        loadFromFile();
         sessionManager.removeSession(id);
+        saveToFile();
     }
 
     @GetMapping("/{id}")
@@ -44,6 +50,42 @@ public class MovieSessionController {
     public  List<Session> loadFromFile() {
         return sessionManager.loadFromFile();
     }
+
+    @GetMapping("/app-info")
+    public AppInfo getAppInfo() {
+        List<Session> allSessions = sessionManager.getAllSessions();
+        int totalSessions = allSessions.size();
+        double averageTicketPrice = calculateAverageTicketPrice(allSessions);
+        double averageDuration = calculateAverageDuration(allSessions);
+        AppInfo appInfo = new AppInfo(totalSessions, averageTicketPrice,averageDuration);
+//        return ResponseEntity.ok(appInfo);
+        return appInfo;
+    }
+
+    private double calculateAverageTicketPrice(List<Session> sessions) {
+        if (sessions.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalTicketPrice = sessions.stream()
+                .mapToDouble(Session::getTicketPrice)
+                .sum();
+
+        return totalTicketPrice / sessions.size();
+    }
+
+    private double calculateAverageDuration(List<Session> sessions) {
+        if (sessions.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalDuration = sessions.stream()
+                .mapToDouble(Session::getDuration)
+                .sum();
+
+        return totalDuration / sessions.size();
+    }
+
 
 }
 

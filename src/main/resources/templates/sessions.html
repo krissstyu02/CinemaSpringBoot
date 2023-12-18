@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сеансы кино</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f8f8f8;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .sessions-list-container {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .session-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .delete-button {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .delete-button:hover {
+            background-color: #c0392b;
+        }
+
+        .info-button {
+            background-color: #2ecc71;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .info-button:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Сеансы кино</h1>
+
+<button onclick="getSessions()">Загрузить все сеансы</button>
+
+<div class="sessions-list-container" id="sessions-list"></div>
+
+<hr>
+
+<h2>Добавить новый сеанс</h2>
+<form onsubmit="addSession(); return false;">
+    <label for="id">Номер фильма:</label>
+    <input type="text" id="id" required>
+
+    <label for="movieName">Название фильма:</label>
+    <input type="text" id="movieName" required>
+
+    <label for="duration">Продолжительность:</label>
+    <input type="text" id="duration" required>
+
+    <label for="startTime">Время начала сеанса:</label>
+    <input type="text" id="startTime" required>
+
+    <label for="ticketPrice">Цена билета:</label>
+    <input type="text" id="ticketPrice" required>
+
+    <button type="submit">Добавить фильм</button>
+</form>
+
+<!-- Кнопка для перехода на другую страницу -->
+<button class="info-button" onclick="redirectToInfoPage()">Перейти к информации</button>
+
+<script>
+    function getSessions() {
+        fetch('/sessions')
+            .then(response => response.json())
+            .then(data => {
+                const sessionsList = document.getElementById('sessions-list');
+                sessionsList.innerHTML = "<h3>Все сеансы:</h3>";
+
+                data.forEach(session => {
+                    const sessionElement = document.createElement('div');
+                    sessionElement.className = 'session-item';
+                    sessionElement.innerHTML = `<p>ID: ${session.id}, Фильм: ${session.movieName}, Время: ${session.startTime},
+                        Цена билета: ${session.ticketPrice}, Продолжительность: ${session.duration}
+                        <button class="delete-button" onclick="deleteSession(${session.id})">Удалить</button></p>`;
+                    sessionsList.appendChild(sessionElement);
+                });
+            })
+            .catch(error => console.error('Ошибка при загрузке сеансов:', error));
+    }
+
+    function addSession() {
+        const id = document.getElementById('id').value;
+        const movieName = document.getElementById('movieName').value;
+        const startTime = document.getElementById('startTime').value;
+        const duration = document.getElementById('duration').value;
+        const ticketPrice = document.getElementById('ticketPrice').value;
+
+        fetch('/sessions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id, movieName, startTime, duration, ticketPrice }),
+        })
+            .then(() => {
+                alert('Фильм успешно добавлен!');
+                getSessions();
+            })
+            .catch(error => console.error('Ошибка при добавлении фильма:', error));
+    }
+
+    function deleteSession(id) {
+        fetch(`/sessions/${id}`, {
+            method: 'DELETE',
+        })
+            .then(() => {
+                alert('Фильм успешно удален!');
+                getSessions();
+            })
+            .catch(error => console.error('Ошибка при удалении фильма:', error));
+    }
+
+    // Функция для перехода на другую страницу
+    function redirectToInfoPage() {
+        // Используйте относительный путь к файлу info.html в каталоге static
+        window.location.href = 'info.html';
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .info-container {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Сведения о приложении</h1>
+
+<div class="info-container">
+    <p>Количество сеансов: <span id="totalSessions"></span></p>
+    <p>Средняя цена билета(руб): <span id="averageTicketPrice"> руб </span></p>
+    <p>Средняя продолжительность фильма(мин): <span id="averageDuration"> руб </span></p>
+</div>
+
+<script>
+    // Fetch data from the server
+    fetch('/sessions/app-info')
+        .then(response => response.json())
+        .then(data => {
+            // Update HTML with the received data
+            document.getElementById('totalSessions').innerText = data.totalSessions;
+            document.getElementById('averageTicketPrice').innerText = data.averageTicketPrice.toFixed(2);
+            document.getElementById('averageDuration').innerText = data.averageDuration.toFixed(2);
+        })
+        .catch(error => {
+            // Display error message if there is an issue fetching data
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message';
+            errorMessage.innerText = 'Error fetching application information.';
+            document.body.appendChild(errorMessage);
+        });
+</script>
+
+</body>
+</html>
